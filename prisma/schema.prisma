@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  address       String   @unique
+  createdEscrows Escrow[] @relation("Creator")
+  participatedEscrows Escrow[] @relation("Participant")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Escrow {
+  id            String   @id @default(uuid())
+  amount        String
+  status        EscrowStatus
+  creatorId     String
+  creator       User     @relation("Creator", fields: [creatorId], references: [id])
+  participants  User[]   @relation("Participant")
+  description   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  expiresAt     DateTime?
+  transactionId String?
+}
+
+enum EscrowStatus {
+  PENDING
+  FUNDED
+  RELEASED
+  CANCELLED
+  DISPUTED
+}
