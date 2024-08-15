@@ -7,7 +7,6 @@ import {
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useEffect } from "react";
 import axios from "axios";
-import { cookies } from "next/headers";
 import { NodeErrorOptions } from "postcss";
 import { ErrorProps } from "next/error";
 
@@ -15,6 +14,7 @@ const Appbar = () => {
   const { publicKey, signMessage } = useWallet();
 
   const signAndSend = async () => {
+    if (!publicKey) return;
     const message = new TextEncoder().encode(
       "Sign into the escrow chain one of the services of cosync labs"
     );
@@ -23,9 +23,8 @@ const Appbar = () => {
     try {
       const response = await axios.post("http://localhost:3000/api/signin", {
         signature,
+        publicKey: publicKey?.toString(),
       });
-
-      cookies().set("jwt", response.data.token, { secure: true });
     } catch (error: any) {
       throw new Error(error);
     }
