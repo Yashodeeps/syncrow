@@ -10,12 +10,21 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
   const { publicKey, signature } = await req.json();
 
-  const signedString = `Sign into the escrow chain one of the services of cosync labs`;
+  const signedString = `Signing into gig chain, your decentralized review platform`;
   const message = new TextEncoder().encode(signedString);
+
+  // Ensure the signature is a Uint8Array of the correct size
+  const signatureArray = new Uint8Array(Object.values(signature));
+  if (signatureArray.length !== 64) {
+    return NextResponse.json(
+      { error: "Invalid signature size" },
+      { status: 400 }
+    );
+  }
 
   const result = nacl.sign.detached.verify(
     message,
-    new Uint8Array(signature.data),
+    signatureArray,
     new PublicKey(publicKey).toBytes()
   );
 
@@ -23,10 +32,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
   }
 
+  // Continue with your existing logic
   const existingUser = await prisma.user.findUnique({
-    where: {
-      address: publicKey,
-    },
+    where: { address: publicKey },
   });
 
   if (existingUser) {
@@ -37,13 +45,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
     );
 
     cookies().set("jwt", token);
-
     return NextResponse.json({ token });
   } else {
     const user = await prisma.user.create({
-      data: {
-        address: publicKey,
-      },
+      data: { address: publicKey },
     });
 
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || "", {
@@ -51,7 +56,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
     });
 
     cookies().set("jwt", token);
-
     return NextResponse.json({ token });
   }
 }

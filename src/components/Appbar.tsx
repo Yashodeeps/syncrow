@@ -16,15 +16,15 @@ const Appbar = () => {
   const signAndSend = async () => {
     if (!publicKey) return;
     const message = new TextEncoder().encode(
-      "Sign into the escrow chain one of the services of cosync labs"
+      "Signing into gig chain, your decentralized review platform"
     );
     const signature = await signMessage?.(message);
-    console.log(signature);
     try {
       const response = await axios.post("http://localhost:3000/api/signin", {
         signature,
         publicKey: publicKey?.toString(),
       });
+      console.log(response.data);
     } catch (error: any) {
       throw new Error(error);
     }
@@ -36,8 +36,8 @@ const Appbar = () => {
 
   return (
     <div className="p-4 border-b flex justify-between">
-      <div className="px-2 text-xl font-semibold">Excrow Chain</div>
-      {publicKey ? <WalletDisconnectButton /> : <WalletMultiButton />}
+      <div className="px-2 text-xl font-semibold">Chain Shadow</div>
+      <div>{<WalletMultiButton />}</div>
     </div>
   );
 };
