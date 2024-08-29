@@ -19,6 +19,8 @@ import { clusterApiUrl } from "@solana/web3.js";
 import "@solana/wallet-adapter-react-ui/styles.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { useTheme } from "next-themes";
+import { Provider } from "react-redux";
+import { store } from "@/lib/store";
 
 const Providers = ({ children }: any) => {
   const network = WalletAdapterNetwork.Devnet;
@@ -33,12 +35,14 @@ const Providers = ({ children }: any) => {
   }, []);
   return (
     <div>
+      <Provider store={store}>
       <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>{children}</WalletModalProvider>
         </WalletProvider>
       </ConnectionProvider>
-      '
+      </Provider>
+      
     </div>
   );
 };

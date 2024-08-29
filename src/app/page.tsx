@@ -6,10 +6,11 @@ import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useRouter } from "next/navigation";
 export default function Home() {
   const router = useRouter();
-  const { publicKey } = useWallet();
-  if (publicKey) {
-    router.push("/dashboard");
+
+  async function handleJoin() {
+    router.push("/auth");
   }
+
   const words = [
     {
       text: "Centralized",
@@ -35,7 +36,12 @@ export default function Home() {
           </p>
           <TypewriterEffectSmooth words={words} />
           <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 space-x-0 md:space-x-4">
-            <WalletMultiButton />
+            <button
+              onClick={handleJoin}
+              className="w-40 h-10 rounded-xl bg-black border dark:border-white border-transparent text-white text-sm"
+            >
+              Join now
+            </button>
           </div>
         </div>
       </BackgroundBeamsWithCollision>

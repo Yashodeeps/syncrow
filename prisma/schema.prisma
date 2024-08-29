@@ -18,6 +18,11 @@ model User {
   address       String   @unique
   createdEscrows Escrow[] @relation("Creator")
   participatedEscrows Escrow[] @relation("Participant")
+  name String
+  professional_title String
+  skills String[]
+  bio String?
+  avatar String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }

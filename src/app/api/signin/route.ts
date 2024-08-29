@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import nacl from "tweetnacl";
 import { PublicKey } from "@solana/web3.js";
 import { cookies } from "next/headers";
+import { use } from "react";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const prisma = await dbconnect();
@@ -33,29 +34,44 @@ export async function POST(req: NextRequest, res: NextResponse) {
   }
 
   // Continue with your existing logic
-  const existingUser = await prisma.user.findUnique({
-    where: { address: publicKey },
-  });
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: { address: publicKey },
+    });
 
-  if (existingUser) {
-    const token = jwt.sign(
-      { userId: existingUser.id },
-      process.env.JWT_SECRET || "",
-      { expiresIn: "7d" }
+    if (existingUser) {
+      const token = jwt.sign(
+        {
+          userId: existingUser.id,
+        },
+        process.env.JWT_SECRET || "",
+        { expiresIn: "7d" }
+      );
+
+      cookies().set("jwt", token);
+      return NextResponse.json({ token: token, user: existingUser });
+    } else {
+      return NextResponse.json(
+        { error: "No existing account." },
+        { status: 404 }
+      );
+    }
+  } catch (error) {
+    return NextResponse.json(
+      { error: "error in your onboarding" },
+      { status: 500 }
     );
-
-    cookies().set("jwt", token);
-    return NextResponse.json({ token });
-  } else {
-    const user = await prisma.user.create({
-      data: { address: publicKey },
-    });
-
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || "", {
-      expiresIn: "7d",
-    });
-
-    cookies().set("jwt", token);
-    return NextResponse.json({ token });
   }
+  //  else {
+  //   const user = await prisma.user.create({
+  //     data: { address: publicKey },
+  //   });
+
+  //   const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || "", {
+  //     expiresIn: "7d",
+  //   });
+
+  //   cookies().set("jwt", token);
+  //   return NextResponse.json({ token });
+  // }
 }
