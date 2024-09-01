@@ -8,7 +8,7 @@ import { cookies } from "next/headers";
 export async function POST(req: NextRequest, res: NextResponse) {
   const prisma = await dbconnect();
 
-  const { publicKey, name, title, skills } = await req.json();
+  const { publicKey, name, title, skills, account } = await req.json();
   if (!publicKey || !name || !title || !skills) {
     return NextResponse.json(
       { error: "All fields are required" },
@@ -37,6 +37,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
           name,
           professional_title: title,
           skills: skills,
+          account: account,
         },
       });
 

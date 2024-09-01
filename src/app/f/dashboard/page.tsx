@@ -49,6 +49,7 @@ import {
 } from "@metaplex-foundation/umi";
 import { sign } from "crypto";
 import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
+import { CardSpotlight } from "@/components/ui/card-spotlight";
 
 const Page = () => {
   const user = useSelector(selectUser);
@@ -56,6 +57,12 @@ const Page = () => {
   const [reviews, setReviews] = useState<Review[] | null>(null);
   const wallet = useWallet();
   const [isCreating, setIsCreating] = useState(false);
+  const [projectDescription, setProjectDescription] = useState<String | null>(
+    null
+  );
+  const [projectTime, setProjectTime] = useState<String | null>("");
+  const [payout, setPayout] = useState<Number | null>(null);
+  const [txnSignature, setTxnSignature] = useState<String | null>(null);
 
   interface Review {
     id: string;
@@ -75,12 +82,24 @@ const Page = () => {
   }, []);
 
   const sendRequest = async () => {
-    if (!user || !email) {
-      return;
+    if (!user || !email || !projectDescription || !projectTime || !payout) {
+      return alert("Please fill in all fields.");
     }
+    console.log("Sending request...", {
+      user,
+      email,
+      projectDescription,
+      projectTime,
+      payout,
+      txnSignature,
+    });
     const response = await axios.post("/api/request", {
       user,
       email,
+      projectDescription,
+      projectTime,
+      payout,
+      txnSignature,
     });
     console.log("Response:", response.data);
   };
@@ -297,7 +316,7 @@ const Page = () => {
 
   return (
     <div className="p-4 flex justify-center items-center gap-2 h-full">
-      <div className=" flex flex-col gap-3 w-1/2 bg-zinc-800 h-full rounded-lg shadow-lg p-4">
+      <div className=" flex flex-col gap-3 w-2/3  bg-gray-900 bg-opacity-80 border border-gray-800  30 h-full rounded-lg shadow-lg p-4">
         {/* <Avatar>
           <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
           <AvatarFallback>RS</AvatarFallback>
@@ -312,8 +331,9 @@ const Page = () => {
         <Separator className="bg-slate-300" />
         <div>
           <div className="flex justify-between items-center">
-            <h1 className="text-xl font-semibold">Tokens</h1>
+            <h1 className="text-xl font-semibold">Reviews</h1>
             {/* <Button onClick={sendRequest}>Request Review</Button> */}
+
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="default">Request Review</Button>
@@ -327,15 +347,71 @@ const Page = () => {
                   </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
+                  {/* main */}
+                  <div className="flex flex-col items-center gap-4">
                     <Label htmlFor="name" className="">
-                      email
+                      Client email
                     </Label>
                     <Input
                       id="email"
                       value={email?.toString()}
                       className="col-span-4 w-full"
                       onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
+
+                  {/* detail */}
+                  <div className="flex flex-col items-center gap-4">
+                    <Label htmlFor="description" className="">
+                      Project Description
+                    </Label>
+                    <Input
+                      id="description"
+                      value={projectDescription?.toString()}
+                      className="col-span-4 w-full"
+                      onChange={(e) => setProjectDescription(e.target.value)}
+                    />
+                  </div>
+
+                  {/* time */}
+
+                  <div className="flex flex-col items-center gap-4">
+                    <Label htmlFor="time" className="">
+                      Project Time
+                    </Label>
+                    <Input
+                      id="time"
+                      value={projectTime?.toString()}
+                      className="col-span-4 w-full"
+                      onChange={(e) => setProjectTime(e.target.value)}
+                    />
+                  </div>
+
+                  {/* payout */}
+                  <div className="flex flex-col items-center gap-4">
+                    <Label htmlFor="payout" className="">
+                      Payout
+                    </Label>
+                    <Input
+                      id="payout"
+                      value={payout?.toString()}
+                      className="col-span-4 w-full"
+                      type="number"
+                      onChange={(e) => setPayout(Number(e.target.value))}
+                    />
+                  </div>
+
+                  {/* txnSignature */}
+
+                  <div className="flex flex-col items-center gap-4">
+                    <Label htmlFor="txnSignature" className="">
+                      Transaction Signature
+                    </Label>
+                    <Input
+                      id="txnSignature"
+                      value={txnSignature?.toString()}
+                      className="col-span-4 w-full"
+                      onChange={(e) => setTxnSignature(e.target.value)}
                     />
                   </div>
                 </div>
@@ -348,44 +424,41 @@ const Page = () => {
             </Dialog>
           </div>
 
-          <div className="flex justify-center items-center">
-            No Tokens request a review
-          </div>
-        </div>
-      </div>
-      <div className="flex flex-col gap-3 w-1/5 bg-zinc-800 min-h-44  rounded-lg shadow-lg p-4">
-        <h1 className="font-semibold">New Reviews</h1>
-        <p className="cursor-pointer text-sm" onClick={fetchReviews}>
-          Refresh
-        </p>
+          <div className="my-4 ">
+            {reviews ? (
+              reviews.map((review) => {
+                return (
+                  <CardSpotlight className="h-96 w-96">
+                    <p className="text-xl font-bold relative z-20 mt-2 text-white">
+                      <div className="font-bold text-xl">{review.name}</div>
+                      <div className="break-all text-sm font-normal">
+                        {" "}
+                        {review.reviewer_address}
+                      </div>
+                    </p>
+                    <div className="text-neutral-200 mt-4 relative z-20">
+                      <div>Project: {review.job}</div>
+                    </div>
+                    <div className="text-neutral-300 mt-4 relative z-20 text-sm">
+                      Review: {review.review}
+                    </div>
 
-        <div className="my-4">
-          {reviews &&
-            reviews.map((review) => {
-              return (
-                <div
-                  key={review.id}
-                  className="border-[0.5px] bg-zinc-900  border-gray-500 rounded-lg p-4 = "
-                >
-                  {/* <div className="text-wrap">{review.reviewer_address}</div> */}
-                  <div className="font-bold text-xl">{review.name}</div>
-                  <div>Job: {review.job}</div>
-                  <Separator className="bg-slate-300" />
-                  <div>{review.review}</div>
-                  {/* 
-                  <Button variant="outline" className="my-2" onClick={mintNFT}>
-                    Mint NFT
-                  </Button> */}
-                  <Button
-                    variant="outline"
-                    className="my-2"
-                    onClick={() => CreateNFT(review)}
-                  >
-                    {isCreating ? "Creating..." : "mint Token with Metadata"}
-                  </Button>
-                </div>
-              );
-            })}
+                    <div className="text-neutral-300 mt-4 relative z-20 text-sm">
+                      <ul>
+                        <li>On Chain hash </li>
+                        <li>Payment verified</li>
+                      </ul>{" "}
+                    </div>
+                  </CardSpotlight>
+                );
+              })
+            ) : (
+              <div>
+                <div>OOps No reviews</div>
+                <Button variant={"outline"}>Request review</Button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

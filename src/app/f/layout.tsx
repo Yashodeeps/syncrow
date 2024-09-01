@@ -8,10 +8,10 @@ export default function DashboardLayout({
 }) {
   return (
     // <AuthLayout>
-    <>
+    <div className="bg-black h-screen">
       <Appbar />
       {children}
-    </>
+    </div>
     // </AuthLayout>
   );
 }

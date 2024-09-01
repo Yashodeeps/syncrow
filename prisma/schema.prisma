@@ -16,6 +16,7 @@ datasource db {
 model User {
   id            String   @id @default(uuid())
   address       String   @unique
+  account  Account @default(FREELANCER)
   name String
   professional_title String
   skills String[]
@@ -30,12 +31,22 @@ model Reviews{
   id            String   @id @default(uuid())
   user_id       String
   user User @relation(fields: [user_id], references: [id])
-  name         String
-  reviewer_address   String @unique
-  job          String
-  review        String
-  nft         String @default("0x0")
+  projectDescription       String
+  projectTime String
+  projectBudget Float
+  transactionSignature String?
+  reviewer_address   String? @unique
+  review        String?
+  rating        Int?
+  onChainHash   String?
+  onChainVerified Boolean @default(false)
+  paymentVerified Boolean @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
 }
+
+enum Account {
+  FREELANCER
+  CLIENT
+} 

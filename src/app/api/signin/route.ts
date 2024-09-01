@@ -15,7 +15,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const message = new TextEncoder().encode(signedString);
 
   // Ensure the signature is a Uint8Array of the correct size
-  const signatureArray = new Uint8Array(Object.values(signature));
+  const signatureArray = new Uint8Array(Object.values(signature.data));
   if (signatureArray.length !== 64) {
     return NextResponse.json(
       { error: "Invalid signature size" },
