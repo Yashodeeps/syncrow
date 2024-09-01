@@ -81,73 +81,83 @@ function Page() {
   }, [publicKey, name, title, skills]);
 
   return (
-    <LampContainer>
-      <motion.h1
-        initial={{ opacity: 0.5, y: 100 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{
-          delay: 0.3,
-          duration: 0.8,
-          ease: "easeInOut",
-        }}
-        className="mt-8 bg-gradient-to-br from-slate-300 to-slate-500 py-4 bg-clip-text text-center text-2xl font-medium tracking-tight text-transparent md:text-4xl"
-      >
-        Join us to level up your freelancing game
-        <div className="mt-10">
-          <WalletMultiButton />
-        </div>
-      </motion.h1>
-      {existingAccount === false && (
-        <div className="flex flex-col items-center justify-center gap-4 mt-4 w-full h-screen ">
-          <p className="font-semibold text-black py-1 bg-red-500 rounded-lg bg-opacity-50 px-4">
-            No existing account.
-          </p>
-          <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="name">
-              <span className="text-red-500">*</span>Name
-            </Label>
-            <Input
-              type="text"
-              id="name"
-              placeholder="Jon Snow"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+    <>
+      <LampContainer>
+        <motion.h1
+          initial={{ opacity: 0.5, y: 100 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{
+            delay: 0.3,
+            duration: 0.8,
+            ease: "easeInOut",
+          }}
+          className="mt-8 bg-gradient-to-br from-slate-300 to-slate-500 py-4 bg-clip-text text-center text-2xl font-medium tracking-tight text-transparent md:text-4xl"
+        >
+          Join us to level up your freelancing game
+          <div className="mt-10 flex justify-center items-center gap-4">
+            <WalletMultiButton />
+            <div className="h-16 w-0.5 bg-gray-500"></div>
+            <Button onClick={signIn}>Sign in</Button>
           </div>
-          <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="title">
-              <span className="text-red-500">*</span>Professional Title
-            </Label>
-            <Input
-              type="text"
-              id="title"
-              placeholder="Lord commander of nights watch"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
+        </motion.h1>
+        {/* {existingAccount === false && (
+          <div className="flex flex-col items-center justify-center gap-4 mt-4 w-full h-screen ">
+            <p className="font-semibold text-black py-1 bg-red-500 rounded-lg bg-opacity-50 px-4">
+              No existing account.
+            </p>
+            <div className="grid w-full max-w-sm items-center gap-1.5">
+              <Label htmlFor="name">
+                <span className="text-red-500">*</span>Name
+              </Label>
+              <Input
+                type="text"
+                id="name"
+                placeholder="Jon Snow"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div className="grid w-full max-w-sm items-center gap-1.5">
+              <Label htmlFor="title">
+                <span className="text-red-500">*</span>Professional Title
+              </Label>
+              <Input
+                type="text"
+                id="title"
+                placeholder="Lord commander of nights watch"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+            <div className="grid w-full max-w-sm items-center gap-1.5">
+              <Label htmlFor="skills">
+                <span className="text-red-500">*</span>
+                {`Skills: separated by [ , ]`}
+              </Label>
+              <Input
+                type="text"
+                id="skills"
+                placeholder="sword fighting, leadership, brooding"
+                value={skills}
+                onChange={(e) => setSkills(e.target.value)}
+              />
+            </div>
+            {error && (
+              <p className="text-red-500 text-sm font-semibold">{error}</p>
+            )}
+            <div className="flex gap-4 items-center justify-center">
+              <Button variant={"default"} onClick={handleOnboard}>
+                On Board
+              </Button>
+              OR
+              <Button variant={"outline"} onClick={signIn}>
+                Sign In
+              </Button>
+            </div>
           </div>
-          <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="skills">
-              <span className="text-red-500">*</span>
-              {`Skills: separated by [ , ]`}
-            </Label>
-            <Input
-              type="text"
-              id="skills"
-              placeholder="sword fighting, leadership, brooding"
-              value={skills}
-              onChange={(e) => setSkills(e.target.value)}
-            />
-          </div>
-          {error && (
-            <p className="text-red-500 text-sm font-semibold">{error}</p>
-          )}
-          <Button variant={"default"} onClick={handleOnboard}>
-            On Board
-          </Button>
-        </div>
-      )}
-    </LampContainer>
+        )} */}
+      </LampContainer>
+    </>
   );
 }
 
