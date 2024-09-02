@@ -31,12 +31,13 @@ model Reviews{
   id            String   @id @default(uuid())
   user_id       String
   user User @relation(fields: [user_id], references: [id])
+  name String
   projectDescription       String
   projectTime String
   projectBudget Float
   transactionSignature String?
-  reviewer_address   String? @unique
-  review        String?
+  reviewer_address   String? 
+  feedback        String? 
   rating        Int?
   onChainHash   String?
   onChainVerified Boolean @default(false)

@@ -10,7 +10,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
   const user = useSelector((state: RootState) => state.user);
   console.log(user);
   if (user.id === null) {
-    router.push("/auth");
+    router.push("/auth/freelancer");
   }
 
   return <div>{children}</div>;

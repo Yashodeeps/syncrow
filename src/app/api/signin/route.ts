@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import nacl from "tweetnacl";
 import { PublicKey } from "@solana/web3.js";
 import { cookies } from "next/headers";
-import { use } from "react";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const prisma = await dbconnect();
@@ -15,7 +14,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const message = new TextEncoder().encode(signedString);
 
   // Ensure the signature is a Uint8Array of the correct size
-  const signatureArray = new Uint8Array(Object.values(signature.data));
+  const signatureArray = new Uint8Array(Object.values(signature));
   if (signatureArray.length !== 64) {
     return NextResponse.json(
       { error: "Invalid signature size" },

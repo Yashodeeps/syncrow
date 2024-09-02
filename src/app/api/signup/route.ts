@@ -29,17 +29,20 @@ export async function POST(req: NextRequest, res: NextResponse) {
       );
 
       cookies().set("jwt", token);
-      return NextResponse.json({ token: token });
+      return NextResponse.json({ token: token, user: existingUser });
     } else {
+      console.log("creating user");
       const user = await prisma.user.create({
         data: {
           address: publicKey,
           name,
           professional_title: title,
           skills: skills,
-          account: account,
+          account: "FREELANCER",
         },
       });
+
+      console.log("user", user);
 
       if (!user) {
         return NextResponse.json(
