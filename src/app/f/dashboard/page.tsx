@@ -177,7 +177,7 @@ const Page = () => {
           <div>{user.professional_title}</div>{" "}
         </div>
 
-        <Tabs defaultValue="reviews" className="w-full text-white ">
+        <Tabs defaultValue="reviews" className="w-full h-full text-white ">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="reviews">Reviews</TabsTrigger>
             <TabsTrigger value="request">Request review</TabsTrigger>
@@ -186,7 +186,7 @@ const Page = () => {
           <div className="bg-gray-900 bg-opacity-80 border border-gray-800  my-4  rounded-lg shadow-lg p-4">
             {" "}
             <TabsContent value="reviews">
-              <div className="my-4 grid grid-cols-2 mx-auto">
+              <div className="my-4 grid grid-cols-2 gap-3 mx-auto">
                 {reviews ? (
                   reviews.map((review) => {
                     return (

@@ -151,7 +151,7 @@ const Page = () => {
             No Tokens request a review
           </div> */}
 
-          <div className="my-4 grid grid-cols-2">
+          <div className="my-4 grid gap-3 grid-cols-2 h-full">
             {user.reviews &&
               user.reviews.map((review) => {
                 return (
