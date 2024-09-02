@@ -201,7 +201,7 @@ const Page = () => {
                 {reviews ? (
                   reviews.map((review) => {
                     return (
-                      <CardSpotlight className=" w-96">
+                      <CardSpotlight key={review.id} className=" w-96">
                         <div className=" relative z-20 mt-2 text-white flex flex-col gap-1">
                           <p className="text-xs">Reviewed by:</p>
                           <div className=" text-xl font-bold text-purple-600">
@@ -367,7 +367,7 @@ const Page = () => {
               <div className="flex gap-4">
                 {unverifiedReviews ? (
                   unverifiedReviews.map((review) => (
-                    <CardSpotlight className=" w-96">
+                    <CardSpotlight key={review.id} className=" w-96">
                       <div className=" relative z-20 mt-2 text-white flex flex-col gap-1">
                         <p className="text-xs">Reviewed by:</p>
                         <div className=" text-xl font-bold text-purple-600">

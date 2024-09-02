@@ -65,8 +65,8 @@ const Page = () => {
               </div>
               <div className="flex gap-4">
                 {freelancers &&
-                  freelancers.map((freelancer) => (
-                    <div className="bg-gray-800 rounded-lg p-4">
+                  freelancers.map((freelancer, index) => (
+                    <div key={index} className="bg-gray-800 rounded-lg p-4">
                       <div className="text-xl font-semibold">
                         {freelancer.name}
                       </div>

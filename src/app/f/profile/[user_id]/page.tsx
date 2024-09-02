@@ -27,13 +27,13 @@ const Page = () => {
   const [user, setUser] = useState<User | null>(null);
   const { user_id } = useParams();
 
-  if (!user_id)
-    return (
-      <div className="flex justify-center items-center h-screen text-xl font-bold">
-        {" "}
-        User id is required{" "}
-      </div>
-    );
+  if (!user_id) {
+    alert("UserId required");
+  }
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
 
   interface Review {
     id: string;
@@ -65,9 +65,6 @@ const Page = () => {
       console.log(error);
     }
   }
-  useEffect(() => {
-    fetchUserProfile();
-  }, []);
 
   console.log("User", user);
 
@@ -143,7 +140,7 @@ const Page = () => {
             {user.reviews &&
               user.reviews.map((review) => {
                 return (
-                  <CardSpotlight className="h-96 w-96">
+                  <CardSpotlight key={review.id} className="h-96 w-96">
                     <p className="text-xl font-bold relative z-20 mt-2 text-white">
                       <div className="font-bold text-xl">{review.name}</div>
                       <div className="break-all text-sm font-normal">
