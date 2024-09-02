@@ -124,7 +124,7 @@ const Page = () => {
                   </Label>
                   <Input
                     id="link"
-                    defaultValue={`${process.env.DOMAIN_URL}/f/profile/${user.id}`}
+                    defaultValue={`${process.env.NEXT_PUBLIC_DOMAIN_URL}/f/profile/${user.id}`}
                     readOnly
                   />
                 </div>

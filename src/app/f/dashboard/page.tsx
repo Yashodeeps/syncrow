@@ -128,49 +128,51 @@ const Page = () => {
               </Avatar>
               <h1 className="text-2xl font-semibold">{user.name}</h1>
             </div>
-            <Button
-              onClick={fetchReviews}
-              variant={"outline"}
-              className="flex items-center gap-2 text-purple-500"
-            >
-              <RefreshCcw />
-              Refresh
-            </Button>
-            <Dialog>
-              <DialogTrigger>
-                <Button variant={"ghost"}>
-                  {" "}
-                  <Share className="text-purple-500" />
-                </Button>{" "}
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Share link</DialogTitle>
-                  <DialogDescription>
-                    Anyone who has this link will be able to view this.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="flex items-center space-x-2">
-                  <div className="grid flex-1 gap-2">
-                    <Label htmlFor="link" className="sr-only">
-                      Link
-                    </Label>
-                    <Input
-                      id="link"
-                      defaultValue={`${process.env.DOMAIN_URL}/f/profile/${user.id}`}
-                      readOnly
-                    />
+            <div className="flex gap-3">
+              <Button
+                onClick={fetchReviews}
+                variant={"outline"}
+                className="flex items-center gap-2 text-purple-500"
+              >
+                <RefreshCcw />
+                Refresh
+              </Button>
+              <Dialog>
+                <DialogTrigger>
+                  <Button variant={"ghost"}>
+                    {" "}
+                    <Share className="text-purple-500" />
+                  </Button>{" "}
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Share link</DialogTitle>
+                    <DialogDescription>
+                      Anyone who has this link will be able to view this.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="flex items-center space-x-2">
+                    <div className="grid flex-1 gap-2">
+                      <Label htmlFor="link" className="sr-only">
+                        Link
+                      </Label>
+                      <Input
+                        id="link"
+                        defaultValue={`${process.env.NEXT_PUBLIC_DOMAIN_URL}/f/profile/${user.id}`}
+                        readOnly
+                      />
+                    </div>
                   </div>
-                </div>
-                <DialogFooter className="sm:justify-start">
-                  <DialogClose asChild>
-                    <Button type="button" variant="secondary">
-                      Close
-                    </Button>
-                  </DialogClose>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+                  <DialogFooter className="sm:justify-start">
+                    <DialogClose asChild>
+                      <Button type="button" variant="secondary">
+                        Close
+                      </Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
           <div>{user.professional_title}</div>{" "}
         </div>
