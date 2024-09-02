@@ -1,6 +1,6 @@
 "use client";
 
-import { RootState } from "@react-three/fiber";
+import { RootState } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import React, { ReactNode } from "react";
 import { useSelector } from "react-redux";

@@ -44,6 +44,7 @@ const Verifytxn = (review: any) => {
         const payer = new PublicKey(txInfo.transaction.message.accountKeys[0]);
         //@ts-ignore
         const receiver = new PublicKey(
+          //@ts-ignore
           txInfo.transaction.message.accountKeys[1]
         );
 

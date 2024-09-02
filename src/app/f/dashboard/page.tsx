@@ -1,9 +1,7 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { RootState } from "@/lib/store";
-import { sendReviewRequest } from "@/utils/sendReviewRequest";
+
 import { selectUser } from "@/utils/userSlice";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -12,22 +10,13 @@ import { useSelector } from "react-redux";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { useWallet, WalletContextState } from "@solana/wallet-adapter-react";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 import { CardSpotlight } from "@/components/ui/card-spotlight";
 import { BadgeX } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { verify } from "tweetnacl";
+
 import { clusterApiUrl, Connection, PublicKey } from "@solana/web3.js";
 import Verifytxn from "@/components/Verifytxn";
 
@@ -45,9 +34,6 @@ const Page = () => {
   const [txnSignature, setTxnSignature] = useState<String | null>(null);
   const [name, setName] = useState<String | null>(null);
   const [isReviewRequestSent, setIsReviewRequestSent] = useState(false);
-  const [verificationStatus, setVerificationStatus] = useState<String | null>(
-    null
-  );
 
   console.log("txn s", txnSignature);
 
@@ -119,57 +105,6 @@ const Page = () => {
   );
 
   console.log("unverified", unverifiedReviews);
-
-  const verifyTransaction = async (review: any) => {
-    const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
-
-    const { reviewer_address } = review;
-    console.log("Verifying transaction...");
-    console.log("sender:", reviewer_address);
-
-    if (!txnSignature || !wallet) {
-      setVerificationStatus("Transaction ID or wallet not available");
-      return;
-    }
-
-    try {
-      const txInfo = await connection.getTransaction(txnSignature as string, {
-        maxSupportedTransactionVersion: 1,
-      });
-      if (txInfo) {
-        const { meta } = txInfo;
-        if (meta?.err) {
-          setVerificationStatus("Transaction failed");
-          return;
-        }
-        console.log("Transaction:", txInfo);
-
-        // Check if the transaction has the expected details
-        //@ts-ignore
-        const payer = new PublicKey(txInfo.transaction.message.accountKeys[0]);
-        //@ts-ignore
-        const receiver = new PublicKey(
-          txInfo.transaction.message.accountKeys[1]
-        );
-
-        console.log("payer", payer.toString(), "receiver", receiver.toString());
-        // Example verification logic
-        if (
-          receiver.toString() === wallet.publicKey?.toString() &&
-          payer.toString() === reviewer_address
-        ) {
-          setVerificationStatus("Transaction verified successfully");
-        } else {
-          setVerificationStatus("Transaction verification failed");
-        }
-      } else {
-        setVerificationStatus("Transaction not found");
-      }
-    } catch (error) {
-      console.error("Error verifying transaction:", error);
-      setVerificationStatus("Error verifying transaction");
-    }
-  };
 
   return (
     <div className="p-4 flex justify-center  gap-2 h-full">
