@@ -1,13 +1,11 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { selectUser } from "@/utils/userSlice";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -21,6 +19,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { CardSpotlight } from "@/components/ui/card-spotlight";
 import { useParams } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
+import { BadgeCheck, BadgeX, CopyIcon, Share } from "lucide-react";
 
 const Page = () => {
   const [email, setEmail] = useState<String | null>();
@@ -39,8 +38,14 @@ const Page = () => {
     id: string;
     reviewer_address: string;
     name: string;
-    review: string;
-    job: string;
+    projectDescription: string;
+    feedback: string;
+    projectBudget: string;
+    updatedAt: string;
+    projectTime: string;
+    onChainHash: string;
+    transactionSignature: string;
+    paymentVerified: Boolean;
   }
 
   interface User {
@@ -84,82 +89,129 @@ const Page = () => {
 
   return (
     <div className="p-4 flex justify-center items-center gap-2 h-full">
-      <div className=" flex flex-col gap-3 w-2/3  bg-gray-900 bg-opacity-80 border border-gray-800  30 h-full rounded-lg shadow-lg p-4">
-        {/* <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-          <AvatarFallback>RS</AvatarFallback>
-        </Avatar> */}
-        <div className="flex justify-between items-center">
+      <div className=" flex flex-col gap-3 w-2/3    30 h-full rounded-lg shadow-lg p-4">
+        <div className="p-4 flex justify-between items-center rounded-lg my-2 bg-gray-900 bg-opacity-80 border border-gray-800">
           <div className="">
-            <h1 className="text-2xl font-semibold">{user.name}</h1>
+            <div className="flex gap-3 items-center">
+              <Avatar>
+                <AvatarImage src="/rsync.png" alt="@shadcn" />
+                <AvatarFallback>RS</AvatarFallback>
+              </Avatar>
+              <div className="">
+                <h1 className="text-2xl font-semibold">{user.name}</h1>
+              </div>
+            </div>
             <div>{user.professional_title}</div>
-          </div>
+          </div>{" "}
           <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="default">Drop a Review</Button>
+            <DialogTrigger>
+              <Button variant={"ghost"}>
+                {" "}
+                <Share className="text-purple-500" />
+              </Button>{" "}
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-md">
               <DialogHeader>
-                <DialogTitle>Send Request</DialogTitle>
+                <DialogTitle>Share link</DialogTitle>
                 <DialogDescription>
-                  *Be responsible & only send requests to those who you have
-                  worked with.
+                  Anyone who has this link will be able to view this.
                 </DialogDescription>
               </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="">
-                    email
+              <div className="flex items-center space-x-2">
+                <div className="grid flex-1 gap-2">
+                  <Label htmlFor="link" className="sr-only">
+                    Link
                   </Label>
                   <Input
-                    id="email"
-                    value={email?.toString()}
-                    className="col-span-4 w-full"
-                    onChange={(e) => setEmail(e.target.value)}
+                    id="link"
+                    defaultValue={`${process.env.DOMAIN_URL}/f/profile/${user.id}`}
+                    readOnly
                   />
                 </div>
               </div>
-              <DialogFooter>
-                <Button type="submit">Send</Button>
+              <DialogFooter className="sm:justify-start">
+                <DialogClose asChild>
+                  <Button type="button" variant="secondary">
+                    Close
+                  </Button>
+                </DialogClose>
               </DialogFooter>
             </DialogContent>
-          </Dialog>{" "}
+          </Dialog>
         </div>
 
-        <Separator className="bg-slate-300" />
-        <div>
+        <div className="p-4 rounded-lg bg-gray-900 bg-opacity-80 border border-gray-800">
           <div className="flex justify-between items-center">
-            <h1 className="text-xl font-semibold">Reviews</h1>
+            <h1 className="text-xl font-semibold p-2 rounded-lg w-full text-center bg-gray-950">
+              Reviews
+            </h1>
           </div>
 
           {/* <div className="flex justify-center items-center">
             No Tokens request a review
           </div> */}
 
-          <div className="my-4 ">
+          <div className="my-4 grid grid-cols-2">
             {user.reviews &&
               user.reviews.map((review) => {
                 return (
-                  <CardSpotlight key={review.id} className="h-96 w-96">
-                    <p className="text-xl font-bold relative z-20 mt-2 text-white">
-                      <div className="font-bold text-xl">{review.name}</div>
-                      <div className="break-all text-sm font-normal">
+                  <CardSpotlight key={review.id} className=" w-96">
+                    <div className=" relative z-20 mt-2 text-white flex flex-col gap-1">
+                      <p className="text-xs">Reviewed by:</p>
+                      <div className=" text-xl font-bold text-purple-600">
                         {" "}
+                        {review.name}
+                      </div>
+                      <div className="break-all text-xs font-normal">
                         {review.reviewer_address}
                       </div>
-                    </p>
-                    <div className="text-neutral-200 mt-4 relative z-20">
-                      <div>Project: {review.job}</div>
                     </div>
-                    <div className="text-neutral-300 mt-4 relative z-20 text-sm">
-                      Review: {review.review}
+                    <div className="text-neutral-200 mt-4 relative z-20 text-sm">
+                      <div>
+                        {" "}
+                        <span className="font-bold text-purple-600">
+                          Description:{" "}
+                        </span>{" "}
+                        {review.projectDescription}
+                      </div>
+                    </div>
+                    <div className="text-neutral-300  relative z-20 text-sm">
+                      <span className="font-bold text-purple-600">Time: </span>{" "}
+                      {review.projectTime}
+                    </div>
+                    <div className="text-neutral-300  relative z-20 text-sm">
+                      <span className="font-bold text-purple-600">
+                        Payout:{" "}
+                      </span>{" "}
+                      {review.projectBudget} SOL
                     </div>
 
                     <div className="text-neutral-300 mt-4 relative z-20 text-sm">
+                      <span className="font-bold text-purple-600">
+                        Review:{" "}
+                      </span>{" "}
+                      {review.feedback}
+                    </div>
+
+                    <div className=" mt-4 bg-purple-500 text-black p-4 rounded-lg font-semibold  relative z-20 text-md">
                       <ul>
-                        <li>On Chain hash </li>
-                        <li>Payment verified</li>
+                        {review.paymentVerified ? (
+                          <li className="flex gap-2 items-center">
+                            <BadgeCheck size={24} className="text-green-900" />
+                            Payment verified
+                          </li>
+                        ) : (
+                          <li className="flex gap-2 items-center">
+                            {" "}
+                            <BadgeX size={24} className="text-red-800" />
+                            Payment Not verified
+                          </li>
+                        )}
                       </ul>{" "}
+                    </div>
+
+                    <div className="text-neutral-300 mt-4 relative z-20 text-xs text-end w-full">
+                      {review.updatedAt}
                     </div>
                   </CardSpotlight>
                 );

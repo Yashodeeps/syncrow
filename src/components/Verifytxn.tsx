@@ -5,9 +5,10 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { clusterApiUrl, Connection, PublicKey } from "@solana/web3.js";
+import axios from "axios";
 
 const Verifytxn = (review: any) => {
-  const { reviewer_address } = review.review;
+  const { reviewer_address, id } = review.review;
   console.log("reviewer_address", review);
   const [txnSignature, setTxnSignature] = useState<String | null>(null);
   const [verificationStatus, setVerificationStatus] = useState<String | null>(
@@ -55,6 +56,12 @@ const Verifytxn = (review: any) => {
           payer.toString() === reviewer_address
         ) {
           setVerificationStatus("Transaction verified successfully");
+          console.log("id", id);
+          const response = await axios.put(`/api/updatereview?reviewId=${id}`);
+          if (!response) {
+            setVerificationStatus("DB error to update verification status");
+          }
+          setIsVerified(true);
         } else {
           setVerificationStatus("Transaction verification failed");
         }
@@ -68,7 +75,7 @@ const Verifytxn = (review: any) => {
   };
 
   return (
-    <div className=" mt-4 bg-gray-700 flex flex-col  justify-center gap-3 p-4 rounded-lg font-semibold  relative z-20 text-md">
+    <div className=" mt-4 bg-gray-900 shadow-lg flex flex-col  justify-center gap-3 p-4 rounded-lg font-semibold  relative z-20 text-md">
       <div>
         <Label htmlFor="hash">Transaction Signature</Label>
         <Input
@@ -82,9 +89,11 @@ const Verifytxn = (review: any) => {
       <Button variant={"outline"} onClick={verifyTransaction}>
         Verify
       </Button>
-      <p className="text-purple-600 border border-gray-400 p-4 rounded-lg">
-        {verificationStatus}
-      </p>
+      {verificationStatus && (
+        <p className="text-purple-600 border border-gray-400 p-4 rounded-lg">
+          {verificationStatus}
+        </p>
+      )}
     </div>
   );
 };

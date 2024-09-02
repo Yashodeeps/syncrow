@@ -13,12 +13,22 @@ import { Label } from "@/components/ui/label";
 import { useWallet } from "@solana/wallet-adapter-react";
 
 import { CardSpotlight } from "@/components/ui/card-spotlight";
-import { BadgeX } from "lucide-react";
+import { BadgeCheck, BadgeX, RefreshCcw, Share } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 
 import { clusterApiUrl, Connection, PublicKey } from "@solana/web3.js";
 import Verifytxn from "@/components/Verifytxn";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const Page = () => {
   const user = useSelector(selectUser);
@@ -109,16 +119,58 @@ const Page = () => {
   return (
     <div className="p-4 flex justify-center  gap-2 h-full">
       <div className=" flex flex-col gap-3 w-2/3  ">
-        {/* <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-          <AvatarFallback>RS</AvatarFallback>
-        </Avatar> */}
         <div className="bg-gray-900 bg-opacity-80 border border-gray-800  rounded-lg shadow-lg p-4">
-          <div className="flex justify-between">
-            <h1 className="text-2xl font-semibold">{user.name}</h1>
-            <Button onClick={fetchReviews} variant={"outline"}>
+          <div className="flex justify-between ">
+            <div className="flex items-center gap-5">
+              <Avatar className="">
+                <AvatarImage src="/rsync.png" alt="@shadcn" />
+                <AvatarFallback>RS</AvatarFallback>
+              </Avatar>
+              <h1 className="text-2xl font-semibold">{user.name}</h1>
+            </div>
+            <Button
+              onClick={fetchReviews}
+              variant={"outline"}
+              className="flex items-center gap-2 text-purple-500"
+            >
+              <RefreshCcw />
               Refresh
             </Button>
+            <Dialog>
+              <DialogTrigger>
+                <Button variant={"ghost"}>
+                  {" "}
+                  <Share className="text-purple-500" />
+                </Button>{" "}
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Share link</DialogTitle>
+                  <DialogDescription>
+                    Anyone who has this link will be able to view this.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="flex items-center space-x-2">
+                  <div className="grid flex-1 gap-2">
+                    <Label htmlFor="link" className="sr-only">
+                      Link
+                    </Label>
+                    <Input
+                      id="link"
+                      defaultValue={`${process.env.DOMAIN_URL}/f/profile/${user.id}`}
+                      readOnly
+                    />
+                  </div>
+                </div>
+                <DialogFooter className="sm:justify-start">
+                  <DialogClose asChild>
+                    <Button type="button" variant="secondary">
+                      Close
+                    </Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
           <div>{user.professional_title}</div>{" "}
         </div>
@@ -143,11 +195,11 @@ const Page = () => {
                             {" "}
                             {review.name}
                           </div>
-                          <div className="break-all text-sm font-normal">
+                          <div className="break-all text-xs font-normal">
                             {review.reviewer_address}
                           </div>
                         </div>
-                        <div className="text-neutral-200 mt-4 relative z-20">
+                        <div className="text-neutral-200 mt-4 relative z-20 text-sm">
                           <div>
                             {" "}
                             <span className="font-bold text-purple-600">
@@ -178,16 +230,21 @@ const Page = () => {
 
                         <div className=" mt-4 bg-purple-500 text-black p-4 rounded-lg font-semibold  relative z-20 text-md">
                           <ul>
-                            <li className="flex gap-2 py-2 items-center">
-                              {" "}
-                              <BadgeX size={16} />
-                              On Chain hash{" "}
-                            </li>
-                            <li className="flex gap-2 items-center">
-                              {" "}
-                              <BadgeX size={16} />
-                              Payment verified
-                            </li>
+                            {review.paymentVerified ? (
+                              <li className="flex gap-2 items-center">
+                                <BadgeCheck
+                                  size={24}
+                                  className="text-green-900"
+                                />
+                                Payment verified
+                              </li>
+                            ) : (
+                              <li className="flex gap-2 items-center">
+                                {" "}
+                                <BadgeX size={24} className="text-red-800" />
+                                Payment Not verified
+                              </li>
+                            )}
                           </ul>{" "}
                         </div>
 
@@ -205,9 +262,9 @@ const Page = () => {
                 )}
               </div>
             </TabsContent>
-            <TabsContent value="request" className="w-1/2 ">
-              <div className="w-full flex flex-col items-center justify-center">
-                <div>
+            <TabsContent value="request" className=" ">
+              <div className="w-full flex gap-6 items-center  text-gray-200 justify-center">
+                <div className="bg-gray-950 p-4 rounded-lg">
                   <div>
                     *Be responsible & only send requests to those who you have
                     worked with.
@@ -291,7 +348,7 @@ const Page = () => {
                     </Button>
                   </div>
                 </div>
-                <div>
+                <div className="flex justify-center items-center h-full w-full">
                   {isReviewRequestSent && (
                     <div className="text-green-500">Request sent</div>
                   )}
