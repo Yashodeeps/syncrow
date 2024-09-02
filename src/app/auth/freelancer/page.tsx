@@ -48,7 +48,7 @@ function Page() {
       );
       const signature = await signMessage(message);
 
-      const response = await axios.post("http://localhost:3000/api/signin", {
+      const response = await axios.post("/api/signin", {
         signature,
         publicKey: publicKey.toString(),
       });
@@ -81,7 +81,7 @@ function Page() {
     setIsOnboarding(true);
 
     try {
-      const response = await axios.post("http://localhost:3000/api/signup", {
+      const response = await axios.post("/api/signup", {
         publicKey: publicKey?.toString(),
         name,
         title,
